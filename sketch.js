@@ -43,7 +43,8 @@ class BinaryManager {
 
   constructor(digitNum, positionY) {
     this.#digitNum = digitNum;
-    this.#binaryNumbers = Array(digitNum).fill(0);
+    // this.#binaryNumbers = Array(digitNum).fill(0);
+    this.#binaryNumbers = [0, 1, 0, 1];
     this.#positionY = positionY;
     this.#selectorIndex = 0;
   }
@@ -51,6 +52,7 @@ class BinaryManager {
   draw() {
     this.#drawNumbers();
     this.#drawSelector();
+    this.#drawSumNumber();
   }
 
   #drawNumbers() {
@@ -93,6 +95,14 @@ class BinaryManager {
     pop();
   }
 
+  #drawSumNumber() {
+    push();
+    fill(255);
+    textAlign(CENTER, CENTER);
+    text(this.#getSumNumber(), width * 0.2, height * 0.7);
+    pop();
+  }
+
   #getXFromIndex(index) {
     if (this.#digitNum === 1) {
       return width / 2;
@@ -102,5 +112,16 @@ class BinaryManager {
     const rightX = width * 0.8;
     const position = map(index, 0, this.#digitNum - 1, leftX, rightX);
     return position;
+  }
+
+  #getSumNumber() {
+    let sum = 0;
+    for (let i = 0; i < this.#digitNum; i++) {
+      if (this.#binaryNumbers[i] === 1) {
+        // convert binary to decimal
+        sum += 2 ** (this.#digitNum - i - 1);
+      }
+    }
+    return sum;
   }
 }
