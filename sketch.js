@@ -1,14 +1,26 @@
+let binaryManager;
+
 function setup() {
   createCanvas(600, 450);
-  background(0);
-  noLoop();
+  binaryManager = new BinaryManager(4, height * 0.9);
 }
 
 function draw() {
+  background(0);
   drawStage();
-  const binaryManager = new BinaryManager(4, height * 0.9);
-  binaryManager.increment();
   binaryManager.draw();
+}
+
+function keyPressed() {
+  if (keyCode === LEFT_ARROW) {
+    binaryManager.moveSelectorLeft();
+  } else if (keyCode === RIGHT_ARROW) {
+    binaryManager.moveSelectorRight();
+  } else if (keyCode === UP_ARROW) {
+    binaryManager.increment();
+  } else if (keyCode == DOWN_ARROW) {
+    binaryManager.decrement();
+  }
 }
 
 function drawStage() {
@@ -66,6 +78,18 @@ class BinaryManager {
     if (this.#binaryNumbers[this.#selectorIndex] === 0) return;
 
     this.#binaryNumbers[this.#selectorIndex]--;
+  }
+
+  moveSelectorLeft() {
+    if (this.#selectorIndex === 0) return;
+
+    this.#selectorIndex--;
+  }
+
+  moveSelectorRight() {
+    if (this.#selectorIndex === this.#digitNum - 1) return;
+
+    this.#selectorIndex++;
   }
 
   #drawNumbers() {
