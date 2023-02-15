@@ -7,6 +7,7 @@ function setup() {
 function draw() {
   drawStage();
   const binaryManager = new BinaryManager(4, height * 0.9);
+  binaryManager.increment();
   binaryManager.draw();
 }
 
@@ -53,6 +54,18 @@ class BinaryManager {
     this.#drawNumbers();
     this.#drawSelector();
     this.#drawSumNumber();
+  }
+
+  increment() {
+    if (this.#binaryNumbers[this.#selectorIndex] === 1) return;
+
+    this.#binaryNumbers[this.#selectorIndex]++;
+  }
+
+  decrement() {
+    if (this.#binaryNumbers[this.#selectorIndex] === 0) return;
+
+    this.#binaryNumbers[this.#selectorIndex]--;
   }
 
   #drawNumbers() {
