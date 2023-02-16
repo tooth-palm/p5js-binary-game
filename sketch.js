@@ -197,7 +197,7 @@ class NoteManager {
       this.#drawFallingNote();
       return;
     }
-    if (this.#isMatched) {
+    if (this.#isMatched()) {
       this.#drawNoteCorrect();
     } else {
       this.#drawNoteWrong();
@@ -213,9 +213,23 @@ class NoteManager {
     pop();
   }
 
-  #drawNoteCorrect() {}
+  #drawNoteCorrect() {
+    push();
+    fill(0, 255, 0);
+    textAlign(CENTER, CENTER);
+    const fallingNumberHeight = this.#getYFromStep();
+    text(this.#fallingNote, width * 0.2, fallingNumberHeight);
+    pop();
+  }
 
-  #drawNoteWrong() {}
+  #drawNoteWrong() {
+    push();
+    fill(255, 0, 0);
+    textAlign(CENTER, CENTER);
+    const fallingNumberHeight = this.#getYFromStep();
+    text(this.#fallingNote, width * 0.2, fallingNumberHeight);
+    pop();
+  }
 
   #isMatched() {}
 
