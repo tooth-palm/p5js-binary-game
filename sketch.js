@@ -60,8 +60,7 @@ class BinaryManager {
 
   constructor(digitNum, positionY) {
     this.#digitNum = digitNum;
-    // this.#binaryNumbers = Array(digitNum).fill(0);
-    this.#binaryNumbers = [0, 1, 0, 1];
+    this.#binaryNumbers = Array(digitNum).fill(0);
     this.#positionY = positionY;
     this.#selectorIndex = 0;
   }
