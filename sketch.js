@@ -4,7 +4,7 @@ let noteManager;
 function setup() {
   createCanvas(600, 450);
   binaryManager = new BinaryManager(4, height * 0.9);
-  noteManager = new NoteManager(4);
+  noteManager = new NoteManager(4, 4);
 }
 
 function draw() {
@@ -169,12 +169,14 @@ class BinaryManager {
 }
 
 class NoteManager {
+  #digitNum;
   #waitingNotes;
   #maxFallingStep;
   #currentFallingStep;
   #fallingNote;
 
-  constructor(fallingStepNum) {
+  constructor(digitNum, fallingStepNum) {
+    this.#digitNum = digitNum;
     this.#waitingNotes = [13, 8, 9, 3];
     this.#maxFallingStep = fallingStepNum - 1;
     this.#nextNote();
@@ -211,6 +213,6 @@ class NoteManager {
   #nextNote() {
     this.#fallingNote = this.#waitingNotes.shift();
     this.#currentFallingStep = this.#maxFallingStep;
-    this.#waitingNotes.push(floor(random(16)));
+    this.#waitingNotes.push(floor(random(2 ** this.#digitNum)));
   }
 }
