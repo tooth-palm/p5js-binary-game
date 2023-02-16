@@ -11,6 +11,7 @@ function draw() {
   background(0);
   drawStage();
   binaryManager.draw();
+  noteManager.update(frameCount);
   noteManager.draw();
 }
 
@@ -23,8 +24,6 @@ function keyPressed() {
     binaryManager.increment();
   } else if (keyCode == DOWN_ARROW) {
     binaryManager.decrement();
-  } else if (keyCode === BACKSPACE) {
-    noteManager.updateStep();
   }
 }
 
@@ -185,10 +184,9 @@ class NoteManager {
     this.#nextNote();
   }
 
-  updateStep() {
-    this.#currentFallingStep--;
-    if (this.#currentFallingStep < 0) {
-      this.#nextNote();
+  update(frame) {
+    if (frame % 60 === 0) {
+      this.#updateStep();
     }
   }
 
@@ -201,6 +199,13 @@ class NoteManager {
       this.#drawNoteCorrect();
     } else {
       this.#drawNoteWrong();
+    }
+  }
+
+  #updateStep() {
+    this.#currentFallingStep--;
+    if (this.#currentFallingStep < 0) {
+      this.#nextNote();
     }
   }
 
