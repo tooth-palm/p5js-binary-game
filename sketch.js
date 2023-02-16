@@ -208,15 +208,7 @@ class NoteManager {
     push();
     fill(255);
     textAlign(CENTER, CENTER);
-    const startY = height * 0.1;
-    const endY = height * 0.7;
-    const fallingNumberHeight = map(
-      this.#currentFallingStep,
-      this.#maxFallingStep,
-      0,
-      startY,
-      endY
-    );
+    const fallingNumberHeight = this.#getYFromStep();
     text(this.#fallingNote, width * 0.2, fallingNumberHeight);
     pop();
   }
@@ -231,5 +223,19 @@ class NoteManager {
     this.#fallingNote = this.#waitingNotes.shift();
     this.#currentFallingStep = this.#maxFallingStep;
     this.#waitingNotes.push(floor(random(2 ** this.#digitNum)));
+  }
+
+  #getYFromStep() {
+    const startY = height * 0.1;
+    const endY = height * 0.7;
+    const numberHeight = map(
+      this.#currentFallingStep,
+      this.#maxFallingStep,
+      0,
+      startY,
+      endY
+    );
+
+    return numberHeight;
   }
 }
