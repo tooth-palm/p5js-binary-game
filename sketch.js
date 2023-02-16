@@ -177,7 +177,10 @@ class NoteManager {
 
   constructor(digitNum, fallingStepNum) {
     this.#digitNum = digitNum;
-    this.#waitingNotes = [13, 8, 9, 3];
+    this.#waitingNotes = [];
+    for (let i = 0; i < 4; i++) {
+      this.#waitingNotes.push(floor(random(2 ** this.#digitNum)));
+    }
     this.#maxFallingStep = fallingStepNum - 1;
     this.#nextNote();
   }
