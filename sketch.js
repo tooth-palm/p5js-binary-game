@@ -1,14 +1,18 @@
 let binaryManager;
+let noteManager;
 
 function setup() {
   createCanvas(600, 450);
   binaryManager = new BinaryManager(4, height * 0.9);
+  noteManager = new NoteManager(4, 4);
 }
 
 function draw() {
   background(0);
   drawStage();
   binaryManager.draw();
+  noteManager.update(frameCount);
+  noteManager.draw();
 }
 
 function keyPressed() {
@@ -56,8 +60,7 @@ class BinaryManager {
 
   constructor(digitNum, positionY) {
     this.#digitNum = digitNum;
-    // this.#binaryNumbers = Array(digitNum).fill(0);
-    this.#binaryNumbers = [0, 1, 0, 1];
+    this.#binaryNumbers = Array(digitNum).fill(0);
     this.#positionY = positionY;
     this.#selectorIndex = 0;
   }
@@ -160,5 +163,97 @@ class BinaryManager {
       }
     }
     return sum;
+  }
+}
+
+class NoteManager {
+  #digitNum;
+  #waitingNotes;
+  #maxFallingStep;
+  #currentFallingStep;
+  #fallingNote;
+
+  constructor(digitNum, fallingStepNum) {
+    this.#digitNum = digitNum;
+    this.#waitingNotes = [];
+    for (let i = 0; i < 4; i++) {
+      this.#waitingNotes.push(floor(random(2 ** this.#digitNum)));
+    }
+    this.#maxFallingStep = fallingStepNum - 1;
+    this.#nextNote();
+  }
+
+  update(frame) {
+    if (frame % 60 === 0) {
+      this.#updateStep();
+    }
+  }
+
+  draw() {
+    if (this.#currentFallingStep > 0) {
+      this.#drawFallingNote();
+      return;
+    }
+    if (this.#isMatched()) {
+      this.#drawNoteCorrect();
+    } else {
+      this.#drawNoteWrong();
+    }
+  }
+
+  #updateStep() {
+    this.#currentFallingStep--;
+    if (this.#currentFallingStep < 0) {
+      this.#nextNote();
+    }
+  }
+
+  #drawFallingNote() {
+    push();
+    fill(255);
+    textAlign(CENTER, CENTER);
+    const fallingNumberHeight = this.#getYFromStep();
+    text(this.#fallingNote, width * 0.2, fallingNumberHeight);
+    pop();
+  }
+
+  #drawNoteCorrect() {
+    push();
+    fill(0, 255, 0);
+    textAlign(CENTER, CENTER);
+    const fallingNumberHeight = this.#getYFromStep();
+    text(this.#fallingNote, width * 0.2, fallingNumberHeight);
+    pop();
+  }
+
+  #drawNoteWrong() {
+    push();
+    fill(255, 0, 0);
+    textAlign(CENTER, CENTER);
+    const fallingNumberHeight = this.#getYFromStep();
+    text(this.#fallingNote, width * 0.2, fallingNumberHeight);
+    pop();
+  }
+
+  #isMatched() {}
+
+  #nextNote() {
+    this.#fallingNote = this.#waitingNotes.shift();
+    this.#currentFallingStep = this.#maxFallingStep;
+    this.#waitingNotes.push(floor(random(2 ** this.#digitNum)));
+  }
+
+  #getYFromStep() {
+    const startY = height * 0.1;
+    const endY = height * 0.7;
+    const numberHeight = map(
+      this.#currentFallingStep,
+      this.#maxFallingStep,
+      0,
+      startY,
+      endY
+    );
+
+    return numberHeight;
   }
 }
