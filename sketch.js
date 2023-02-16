@@ -174,9 +174,9 @@ class NoteManager {
   #currentFallingStep;
   #fallingNote;
 
-  constructor(maxFallingStep) {
+  constructor(fallingStepNum) {
     this.#waitingNotes = [13, 8, 9, 3];
-    this.#maxFallingStep = maxFallingStep - 1;
+    this.#maxFallingStep = fallingStepNum - 1;
     this.#nextNote();
   }
 
@@ -199,7 +199,7 @@ class NoteManager {
     const endY = height * 0.7;
     const fallingNumberHeight = map(
       this.#currentFallingStep,
-      this.#maxFallingStep - 1,
+      this.#maxFallingStep,
       0,
       startY,
       endY
@@ -210,7 +210,7 @@ class NoteManager {
 
   #nextNote() {
     this.#fallingNote = this.#waitingNotes.shift();
-    this.#currentFallingStep = this.#maxFallingStep - 1;
+    this.#currentFallingStep = this.#maxFallingStep;
     this.#waitingNotes.push(floor(random(16)));
   }
 }
