@@ -193,7 +193,15 @@ class NoteManager {
   }
 
   draw() {
-    this.#drawFallingNote();
+    if (this.#currentFallingStep > 0) {
+      this.#drawFallingNote();
+      return;
+    }
+    if (this.#isMatched) {
+      this.#drawNoteCorrect();
+    } else {
+      this.#drawNoteWrong();
+    }
   }
 
   #drawFallingNote() {
@@ -212,6 +220,12 @@ class NoteManager {
     text(this.#fallingNote, width * 0.2, fallingNumberHeight);
     pop();
   }
+
+  #drawNoteCorrect() {}
+
+  #drawNoteWrong() {}
+
+  #isMatched() {}
 
   #nextNote() {
     this.#fallingNote = this.#waitingNotes.shift();
