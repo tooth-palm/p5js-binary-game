@@ -1,14 +1,17 @@
 let binaryManager;
+let noteManager;
 
 function setup() {
   createCanvas(600, 450);
   binaryManager = new BinaryManager(4, height * 0.9);
+  noteManager = new NoteManager(4);
 }
 
 function draw() {
   background(0);
   drawStage();
   binaryManager.draw();
+  noteManager.draw();
 }
 
 function keyPressed() {
@@ -20,6 +23,8 @@ function keyPressed() {
     binaryManager.increment();
   } else if (keyCode == DOWN_ARROW) {
     binaryManager.decrement();
+  } else if (keyCode === BACKSPACE) {
+    noteManager.updateStep();
   }
 }
 
@@ -160,5 +165,52 @@ class BinaryManager {
       }
     }
     return sum;
+  }
+}
+
+class NoteManager {
+  #waitingNotes;
+  #maxFallingStep;
+  #currentFallingStep;
+  #fallingNote;
+
+  constructor(maxFallingStep) {
+    this.#waitingNotes = [13, 8, 9, 3];
+    this.#maxFallingStep = maxFallingStep - 1;
+    this.#nextNote();
+  }
+
+  updateStep() {
+    this.#currentFallingStep--;
+    if (this.#currentFallingStep < 0) {
+      this.#nextNote();
+    }
+  }
+
+  draw() {
+    this.#drawFallingNote();
+  }
+
+  #drawFallingNote() {
+    push();
+    fill(255);
+    textAlign(CENTER, CENTER);
+    const startY = height * 0.1;
+    const endY = height * 0.7;
+    const fallingNumberHeight = map(
+      this.#currentFallingStep,
+      this.#maxFallingStep - 1,
+      0,
+      startY,
+      endY
+    );
+    text(this.#fallingNote, width * 0.2, fallingNumberHeight);
+    pop();
+  }
+
+  #nextNote() {
+    this.#fallingNote = this.#waitingNotes.shift();
+    this.#currentFallingStep = this.#maxFallingStep - 1;
+    this.#waitingNotes.push(floor(random(16)));
   }
 }
