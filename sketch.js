@@ -12,7 +12,7 @@ function draw() {
   drawStage();
   binaryManager.draw();
   noteManager.update(frameCount);
-  noteManager.draw();
+  noteManager.draw(binaryManager.getSumNumber());
 }
 
 function keyPressed() {
@@ -139,7 +139,7 @@ class BinaryManager {
     push();
     fill(255);
     textAlign(CENTER, CENTER);
-    text(this.#getSumNumber(), width * 0.2, height * 0.7);
+    text(this.getSumNumber(), width * 0.2, height * 0.7);
     pop();
   }
 
@@ -154,7 +154,7 @@ class BinaryManager {
     return position;
   }
 
-  #getSumNumber() {
+  getSumNumber() {
     let sum = 0;
     for (let i = 0; i < this.#digitNum; i++) {
       if (this.#binaryNumbers[i] === 1) {
@@ -189,12 +189,12 @@ class NoteManager {
     }
   }
 
-  draw() {
+  draw(playerNumber) {
     if (this.#currentFallingStep > 0) {
       this.#drawFallingNote();
       return;
     }
-    if (this.#isMatched()) {
+    if (this.#isMatched(playerNumber)) {
       this.#drawNoteCorrect();
     } else {
       this.#drawNoteWrong();
@@ -235,7 +235,9 @@ class NoteManager {
     pop();
   }
 
-  #isMatched() {}
+  #isMatched(playerNumber) {
+    return this.#fallingNote === playerNumber;
+  }
 
   #nextNote() {
     this.#fallingNote = this.#waitingNotes.shift();
