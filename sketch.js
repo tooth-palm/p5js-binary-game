@@ -1,21 +1,28 @@
 let binaryManager;
 let noteManager;
 let scoreManager;
+let lifeManager;
 
 function setup() {
   createCanvas(600, 450);
   binaryManager = new BinaryManager(4, height * 0.9);
   noteManager = new NoteManager(4, 4);
   scoreManager = new ScoreManager();
+  lifeManager = new LifeManager(5);
 }
 
 function draw() {
+  if (lifeManager.life <= 0) {
+    noLoop();
+    console.log("gameover");
+  }
   background(0);
   drawStage();
   binaryManager.draw();
   noteManager.update(frameCount, binaryManager.getSumNumber());
   noteManager.draw();
   scoreManager.draw();
+  lifeManager.draw();
 }
 
 function keyPressed() {
@@ -221,6 +228,8 @@ class NoteManager {
     // when number is mathced, add score
     if (this.#isMatched) {
       scoreManager.add(10);
+    } else {
+      lifeManager.applyDamage(1);
     }
   }
 
@@ -291,6 +300,27 @@ class ScoreManager {
     fill(255);
     textAlign(RIGHT);
     text(this.score, this.#x, this.#y);
+    pop();
+  }
+}
+
+class LifeManager {
+  #x = 60;
+  #y = 60;
+
+  constructor(initialLife) {
+    this.life = initialLife;
+  }
+
+  applyDamage(damage) {
+    this.life -= damage;
+  }
+
+  draw() {
+    push();
+    fill(255);
+    textAlign(RIGHT);
+    text(this.life, this.#x, this.#y);
     pop();
   }
 }
