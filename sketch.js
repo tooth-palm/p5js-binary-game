@@ -11,8 +11,8 @@ function draw() {
   background(0);
   drawStage();
   binaryManager.draw();
-  noteManager.update(frameCount);
-  noteManager.draw(binaryManager.getSumNumber());
+  noteManager.update(frameCount, binaryManager.getSumNumber());
+  noteManager.draw();
 }
 
 function keyPressed() {
@@ -172,6 +172,7 @@ class NoteManager {
   #maxFallingStep;
   #currentFallingStep;
   #fallingNote;
+  #isMatched;
 
   constructor(digitNum, fallingStepNum) {
     this.#digitNum = digitNum;
@@ -183,29 +184,34 @@ class NoteManager {
     this.#nextNote();
   }
 
-  update(frame) {
+  update(frame, playerNumber) {
     if (frame % 60 === 0) {
-      this.#updateStep();
+      this.#updateStep(playerNumber);
     }
   }
 
-  draw(playerNumber) {
+  draw() {
     if (this.#currentFallingStep > 0) {
       this.#drawFallingNote();
       return;
     }
-    if (this.#isMatched(playerNumber)) {
+    if (this.#isMatched) {
       this.#drawNoteCorrect();
     } else {
       this.#drawNoteWrong();
     }
   }
 
-  #updateStep() {
+  #updateStep(playerNumber) {
     this.#currentFallingStep--;
+
+    // if note is on the ground, delete and spawn note
     if (this.#currentFallingStep < 0) {
       this.#nextNote();
     }
+
+    // check if note is matched
+    this.#isMatched = this.#fallingNote === playerNumber;
   }
 
   #drawFallingNote() {
@@ -233,10 +239,6 @@ class NoteManager {
     const fallingNumberHeight = this.#getYFromStep();
     text(this.#fallingNote, width * 0.2, fallingNumberHeight);
     pop();
-  }
-
-  #isMatched(playerNumber) {
-    return this.#fallingNote === playerNumber;
   }
 
   #nextNote() {
