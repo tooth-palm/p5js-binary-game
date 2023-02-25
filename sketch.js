@@ -1,10 +1,12 @@
 let binaryManager;
 let noteManager;
+let scoreManager;
 
 function setup() {
   createCanvas(600, 450);
   binaryManager = new BinaryManager(4, height * 0.9);
   noteManager = new NoteManager(4, 4);
+  scoreManager = new ScoreManager();
 }
 
 function draw() {
@@ -13,6 +15,7 @@ function draw() {
   binaryManager.draw();
   noteManager.update(frameCount, binaryManager.getSumNumber());
   noteManager.draw();
+  scoreManager.draw();
 }
 
 function keyPressed() {
@@ -210,8 +213,15 @@ class NoteManager {
       this.#nextNote();
     }
 
+    if (this.#currentFallingStep !== 0) return;
+
     // check if note is matched
     this.#isMatched = this.#fallingNote === playerNumber;
+
+    // when number is mathced, add score
+    if (this.#isMatched) {
+      scoreManager.add(10);
+    }
   }
 
   #drawFallingNote() {
@@ -259,5 +269,28 @@ class NoteManager {
     );
 
     return numberHeight;
+  }
+}
+
+class ScoreManager {
+  #x = 60;
+  #y = 30;
+
+  constructor() {
+    this.score = 0;
+  }
+
+  add(num) {
+    if (num < 0) return;
+
+    this.score += num;
+  }
+
+  draw() {
+    push();
+    fill(255);
+    textAlign(RIGHT);
+    text(this.score, this.#x, this.#y);
+    pop();
   }
 }
