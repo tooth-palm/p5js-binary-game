@@ -2,13 +2,11 @@ let binaryManager;
 let noteManager;
 let scoreManager;
 let lifeManager;
+let gameState;
 
 function setup() {
   createCanvas(600, 450);
-  binaryManager = new BinaryManager(4, height * 0.9);
-  noteManager = new NoteManager(4, 4);
-  scoreManager = new ScoreManager();
-  lifeManager = new LifeManager(5);
+  createNewGame();
 }
 
 function draw() {
@@ -22,6 +20,7 @@ function draw() {
 
   if (lifeManager.life <= 0) {
     noLoop();
+    gameState = "gameOver";
     drawGameOver();
   }
 }
@@ -35,6 +34,13 @@ function keyPressed() {
     binaryManager.increment();
   } else if (keyCode == DOWN_ARROW) {
     binaryManager.decrement();
+  }
+
+  if (gameState === "play") return;
+
+  // click space to restart
+  if (keyCode === 32) {
+    createNewGame();
   }
 }
 
@@ -339,4 +345,13 @@ class LifeManager {
     text(this.life, this.#x, this.#y);
     pop();
   }
+}
+
+function createNewGame() {
+  binaryManager = new BinaryManager(4, height * 0.9);
+  noteManager = new NoteManager(4, 4);
+  scoreManager = new ScoreManager();
+  lifeManager = new LifeManager(5);
+  gameState = "play";
+  loop();
 }
