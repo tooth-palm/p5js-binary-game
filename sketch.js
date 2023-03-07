@@ -1,12 +1,12 @@
 let binaryManager;
 let noteManager;
 let scoreManager;
+let lifeManager;
+let gameState;
 
 function setup() {
   createCanvas(600, 450);
-  binaryManager = new BinaryManager(4, height * 0.9);
-  noteManager = new NoteManager(4, 4);
-  scoreManager = new ScoreManager();
+  createNewGame();
 }
 
 function draw() {
@@ -16,6 +16,13 @@ function draw() {
   noteManager.update(frameCount, binaryManager.getSumNumber());
   noteManager.draw();
   scoreManager.draw();
+  lifeManager.draw();
+
+  if (lifeManager.life <= 0) {
+    noLoop();
+    gameState = "gameOver";
+    drawGameOver();
+  }
 }
 
 function keyPressed() {
@@ -27,6 +34,13 @@ function keyPressed() {
     binaryManager.increment();
   } else if (keyCode == DOWN_ARROW) {
     binaryManager.decrement();
+  }
+
+  if (gameState === "play") return;
+
+  // click space to restart
+  if (keyCode === 32) {
+    createNewGame();
   }
 }
 
@@ -52,6 +66,21 @@ function drawStage() {
   stroke(255);
   noFill();
   line(width * 0.3, height * 0.2, width, height * 0.2);
+  pop();
+}
+
+function drawGameOver() {
+  push();
+  background(0, 200);
+  textAlign(CENTER);
+
+  fill(255, 0, 0);
+  textSize(32);
+  text("Game Over", width / 2, height / 2);
+
+  fill(255);
+  textSize(18);
+  text("- Space to Restart -", width / 2, height * (2 / 3));
   pop();
 }
 
@@ -221,6 +250,8 @@ class NoteManager {
     // when number is mathced, add score
     if (this.#isMatched) {
       scoreManager.add(10);
+    } else {
+      lifeManager.applyDamage(1);
     }
   }
 
@@ -293,4 +324,34 @@ class ScoreManager {
     text(this.score, this.#x, this.#y);
     pop();
   }
+}
+
+class LifeManager {
+  #x = 60;
+  #y = 60;
+
+  constructor(initialLife) {
+    this.life = initialLife;
+  }
+
+  applyDamage(damage) {
+    this.life -= damage;
+  }
+
+  draw() {
+    push();
+    fill(255);
+    textAlign(RIGHT);
+    text(this.life, this.#x, this.#y);
+    pop();
+  }
+}
+
+function createNewGame() {
+  binaryManager = new BinaryManager(4, height * 0.9);
+  noteManager = new NoteManager(4, 4);
+  scoreManager = new ScoreManager();
+  lifeManager = new LifeManager(5);
+  gameState = "play";
+  loop();
 }
