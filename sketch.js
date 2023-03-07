@@ -12,10 +12,6 @@ function setup() {
 }
 
 function draw() {
-  if (lifeManager.life <= 0) {
-    noLoop();
-    console.log("gameover");
-  }
   background(0);
   drawStage();
   binaryManager.draw();
@@ -23,6 +19,11 @@ function draw() {
   noteManager.draw();
   scoreManager.draw();
   lifeManager.draw();
+
+  if (lifeManager.life <= 0) {
+    noLoop();
+    drawGameOver();
+  }
 }
 
 function keyPressed() {
@@ -59,6 +60,21 @@ function drawStage() {
   stroke(255);
   noFill();
   line(width * 0.3, height * 0.2, width, height * 0.2);
+  pop();
+}
+
+function drawGameOver() {
+  push();
+  background(0, 200);
+  textAlign(CENTER);
+
+  fill(255, 0, 0);
+  textSize(32);
+  text("Game Over", width / 2, height / 2);
+
+  fill(255);
+  textSize(18);
+  text("- Space to Restart -", width / 2, height * (2 / 3));
   pop();
 }
 
